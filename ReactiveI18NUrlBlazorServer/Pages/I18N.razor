@@ -1,0 +1,27 @@
+﻿@page "/i18n"
+@using Microsoft.Extensions.Localization
+@using System.Globalization
+@inject IStringLocalizer<I18N> Localizer
+@inject NavigationManager NavigationManager
+
+<h3>Example date: @DateTime.Now</h3>
+<h3>"Name" in @CultureInfo.CurrentCulture.DisplayName: @Localizer["Name"]</h3>
+<h3>Translate successful? @(!Localizer["Name"].ResourceNotFound)</h3>
+<h3>Translation resource location: @Localizer["Name"].SearchedLocation</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += Render;
+    }
+
+    private void Render(object sender, LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= Render;
+    }
+}

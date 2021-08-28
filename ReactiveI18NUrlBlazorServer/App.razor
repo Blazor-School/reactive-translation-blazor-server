@@ -1,0 +1,39 @@
+@using System.Globalization
+@using System.Web;
+@using ReactiveI18NUrlBlazorServer.Data
+@using Microsoft.Extensions.Options 
+@inject NavigationManager NavigationManager
+@inject IOptions<BlazorSchoolLocalizationOptions> BlazorSchoolLocalizationOptions
+@implements IDisposable
+
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += DetermineLanguage;
+    }
+
+    private void DetermineLanguage(object sender, LocationChangedEventArgs e)
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var urlParameters = HttpUtility.ParseQueryString(uri.Query);
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(urlParameters["language"] ?? BlazorSchoolLocalizationOptions.Value.DefaultLanguage);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(urlParameters["language"] ?? BlazorSchoolLocalizationOptions.Value.DefaultLanguage);
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= DetermineLanguage;
+    }
+}

@@ -5,10 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
-using ReactiveI18NCookiesBlazorServer.Data;
+using ReactiveI18NUrlBlazorServer.Data;
 using System.Collections.Generic;
 
-namespace ReactiveI18NCookiesBlazorServer
+namespace ReactiveI18NUrlBlazorServer
 {
     public class Startup
     {
@@ -25,7 +25,11 @@ namespace ReactiveI18NCookiesBlazorServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.Configure<BlazorSchoolLocalizationOptions>(options =>
+            {
+                options.ResourcesPath = "Resources";
+                options.DefaultLanguage = "en";
+            });
             services.AddScoped(typeof(IStringLocalizer<>), typeof(BlazorSchoolStringLocalizer<>));
             services.Configure<RequestLocalizationOptions>(options =>
             {
@@ -33,7 +37,7 @@ namespace ReactiveI18NCookiesBlazorServer
                 options.AddSupportedUICultures(new[] { "en", "fr" });
                 options.RequestCultureProviders = new List<IRequestCultureProvider>()
                 {
-                    new BlazorSchoolRequestCultureProvider("en")
+            new BlazorSchoolRequestCultureProvider(Configuration.Get<BlazorSchoolLocalizationOptions>())
                 };
             });
         }

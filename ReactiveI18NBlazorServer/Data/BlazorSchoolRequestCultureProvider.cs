@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ReactiveI18NCookiesBlazorServer.Data
 {
-    public class BlazorSchoolLocalStorageRequestCultureProvider : RequestCultureProvider
+    public class BlazorSchoolRequestCultureProvider : RequestCultureProvider
     {
         public string DefaultCulture { get; set; }
 
-        public BlazorSchoolLocalStorageRequestCultureProvider(string defaultCulture)
+        public BlazorSchoolRequestCultureProvider(string defaultCulture)
         {
             DefaultCulture = defaultCulture;
         }
