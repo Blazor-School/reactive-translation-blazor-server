@@ -1,0 +1,26 @@
+﻿@page "/i18n"
+@using Microsoft.Extensions.Localization
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization;
+@inject IStringLocalizer<I18N> Localizer
+@inject IJSRuntime JSRuntime
+
+<h3>Example date: @DateTime.Now</h3>
+<h3>"Name" in @CultureInfo.CurrentCulture.DisplayName: @Localizer["Name"]</h3>
+<h3>Translate successful? @(!Localizer["Name"].ResourceNotFound)</h3>
+<h3>Translation resource location: @Localizer["Name"].SearchedLocation</h3>
+
+<select @onchange="OnChangeLanguage">
+    <option value="">Select</option>
+    <option value="en">English</option>
+    <option value="fr">France</option>
+</select>
+
+@code {
+    private void OnChangeLanguage(ChangeEventArgs e)
+    {
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo((string)e.Value);
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo((string)e.Value);
+        JSRuntime.InvokeVoidAsync("BlazorUtil.addCookies", CookieRequestCultureProvider.DefaultCookieName, CookieRequestCultureProvider.MakeCookieValue(new(CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture)));
+    }
+}

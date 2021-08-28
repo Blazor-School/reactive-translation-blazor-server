@@ -14,7 +14,7 @@
     <base href="~/" />
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link href="css/site.css" rel="stylesheet" />
-    <link href="ReactiveI18NBlazorServer.styles.css" rel="stylesheet" />
+    <link href="ReactiveI18NCookiesBlazorServer.styles.css" rel="stylesheet" />
 </head>
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />
@@ -29,7 +29,8 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-
+    
+    <script src="~/js/BlazorUtil.js" type="text/javascript"></script>
     <script src="_framework/blazor.server.js"></script>
 </body>
 </html>

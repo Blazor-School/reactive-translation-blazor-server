@@ -1,8 +1,14 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Options;
+using ReactiveI18NCookiesBlazorServer.Data;
+using System.Collections.Generic;
 
 namespace ReactiveI18NCookiesBlazorServer
 {
@@ -21,6 +27,17 @@ namespace ReactiveI18NCookiesBlazorServer
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddScoped(typeof(IStringLocalizer<>), typeof(BlazorSchoolStringLocalizer<>));
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.AddSupportedCultures(new[] { "en", "fr" });
+                options.AddSupportedUICultures(new[] { "en", "fr" });
+                options.RequestCultureProviders = new List<IRequestCultureProvider>()
+                {
+                    new BlazorSchoolLocalStorageRequestCultureProvider("en")
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,8 +52,8 @@ namespace ReactiveI18NCookiesBlazorServer
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseRequestLocalization();
             app.UseStaticFiles();
-
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
